@@ -1,0 +1,53 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - targets:
+        - localhost
+        labels:
+          job: varlogs
+          __path__: /var/log/*log
+      - targets:
+          - localhost
+        labels:
+          job: AJ-USER
+          __path__: /var/log/jutajackpot.com/*log
+      - targets:
+          - localhost
+        labels:
+          job: AJ-USER-WAP
+          __path__: /var/log/wap.jutajackpot.com/*log
+      - targets:
+          - localhost
+        labels:
+          job: AJ-USER-MOB
+          __path__: /var/log/m.jutajackpot.com/*log
+      - targets:
+          - localhost
+        labels:
+          job: AJ-ADMIN
+          __path__: /var/log/admin.jutajackpot.com/*log
+      - targets:
+          - localhost
+        labels:
+          job: AJ-API
+          __path__: /var/log/api-jutajackpot.com/*log
+      - targets:
+          - localhost
+        labels:
+          job: apache
+          __path__: /var/log/httpd/*log
+      - targets:
+          - localhost
+        labels:
+          job: grafanalogs
+          __path__: /var/log/grafana/*log

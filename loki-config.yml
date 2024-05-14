@@ -1,0 +1,57 @@
+auth_enabled: false
+
+server:
+  http_listen_port: 3100
+  grpc_listen_port: 9096
+
+common:
+  instance_addr: localhost
+  path_prefix: /tmp/loki
+  storage:
+    filesystem:
+      chunks_directory: /tmp/loki/chunks
+      rules_directory: /tmp/loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+
+query_range:
+  results_cache:
+    cache:
+      embedded_cache:
+        enabled: true
+        max_size_mb: 100
+
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h  # Rotate indexes every 24 hours (daily)
+
+ruler:
+  alertmanager_url: http://localhost:9093
+
+compactor:
+  working_directory: /tmp/loki/compactor
+  shared_store: filesystem
+  compaction_window: 1h
+  retention_deletes_enabled: true
+  retention_period: 7d  # Keep data for 7 days
+
+limits_config:
+  enforce_metric_name_uniqueness: false
+  reject_old_samples: true
+  reject_old_samples_max_age: 168h  # 7 days
+
+chunk_store_config:
+  max_look_back_period: 0s
+
+table_manager:
+  retention_deletes_enabled: true
+  retention_period: 7d
+  compacted_index_limit: 1073741824  # 1 GB
